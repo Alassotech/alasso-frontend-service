@@ -3,12 +3,14 @@ import './css/Navbar.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchCourses, fetchNptel } from '../store/slices/coursesSlices'
+import { logout } from '../store/slices/authSlice'
 const Navbar = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [isPending, startTransition] = useTransition()
   
   const { courses, nptel } = useSelector(state => state.course)
+  const { user } = useSelector(state => state.auth)
 
   useEffect(() => {
     startTransition(() => {
@@ -178,7 +180,7 @@ const Navbar = () => {
             <li className='nav-item mx-3'>
               {user ? (
                 <button
-                  // onClick={}
+                  onClick={() => dispatch(logout())}
                   className='nav-btn bg-danger'
                   style={{
                     boxShadow:

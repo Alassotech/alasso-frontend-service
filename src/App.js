@@ -1,9 +1,6 @@
 import './App.css'
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import { useGetFromStore } from './hooks/zustandHooks'
-import { useAuthStore, useContentStore } from './store'
 import { Navigate } from 'react-router-dom'
 import { lazy, useEffect, useState, Suspense, useTransition } from 'react'
 import SkeletonDisplay from './skeletons/SkeletonDisplay'
@@ -11,6 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import ErrorFallback from './Error/ErrorFallback'
 import Navbar from './Components/Navbar'
 import NPTEL from './Components/NPTEL'
+import { useSelector, useDispatch } from 'react-redux'
 
 const Developers = lazy(() => import('./Components/Developers'))
 const Intro = lazy(() => import('./Promotions/Intro'))
@@ -39,7 +37,7 @@ function App () {
   const [isPending, startTransition] = useTransition()
   const [showIntro, setShowIntro] = useState(true)
 
-  const isLoggedIn = useGetFromStore(useAuthStore, state => state.isLoggedIn)
+  const { isLoggedIn } = useSelector(state => state.auth)
 
   const PrivateRoute = ({ element, redirectTo, isAuthenticated }) => {
     return isAuthenticated ? element : <Navigate to={redirectTo} />
@@ -83,7 +81,11 @@ function App () {
             <Navbar />
             <main>
               <Routes>
-                <Route path='' element={<Home />} />
+                <Route path='/' element={<ErrorBoundary FallbackComponent={ErrorFallback}>
+                      <Suspense fallback={<SkeletonDisplay />}>
+                        <Home />
+                      </Suspense>
+                    </ErrorBoundary>} />
                 <Route
                   path='download'
                   element={

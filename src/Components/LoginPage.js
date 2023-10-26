@@ -1,48 +1,45 @@
-import React from 'react'
-import { useState } from 'react'
-import '../Components/css/Login.css'
-import axios from '../axios'
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { Vortex } from 'react-loader-spinner'
 import toast from 'react-hot-toast'
-import { useEffect } from 'react'
-import { useGetFromStore } from '../hooks/zustandHooks'
-import { useAuthStore } from '../store'
+import { login } from '../store/slices/authSlice'
+
 const Login = () => {
   const navigate = useNavigate()
-  const token = useGetFromStore(useAuthStore, state => state.token)
-  const setStoreToken = useAuthStore((state) => state.setToken)
+  const { isLoggedIn, loading, error } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    if (token) {
+    if (isLoggedIn) {
       navigate('/')
     }
-  })
+  }, [isLoggedIn, navigate])
 
-  const [email, setemail] = useState('')
-  const [password, setpassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleLogin = async e => {
     e.preventDefault()
-    setLoading(true)
-
+    const userdata = {
+      email,
+      password
+    }
     try {
-      const res = await axios.post('/user/login', { email, password })
+      dispatch(login(userdata))
+      if (error) {
+        toast.error('Check Credentials')
+      }
+      else{
 
-      const { access_token } = res.data
-
-      setStoreToken(access_token)
-     
-
-    } catch (error) {
-      error.response &&
-        error.response.data &&
-        toast.error(error.response.data.message)
-    } finally {
-      setLoading(false)
+        navigate('/')
+      }
+    } catch (err) {
+      console.log(error)
     }
   }
 
+  console.log(loading)
   return (
     <div className='box-cont'>
       <div className='left'>
@@ -59,25 +56,22 @@ const Login = () => {
         )}
         <h3>Login</h3>
 
-        <form method='POST'>
+        <form onSubmit={handleLogin}>
           <input
             type='email'
-            name={email}
-            onChange={e => setemail(e.target.value)}
+            name='email'
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             placeholder='E-MAIL'
           />
           <input
             type='password'
-            name={password}
-            onChange={e => setpassword(e.target.value)}
+            name='password'
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             placeholder='PASSWORD'
           />
-          <input
-            className='login-inp'
-            onClick={handleLogin}
-            type='submit'
-            value='Login'
-          />
+          <input className='login-inp' type='submit' value='Login' />
         </form>
 
         <div className='new'>
@@ -92,21 +86,21 @@ const Login = () => {
             <a href=''>
               {' '}
               <i
-                class=' text-primary fa fa-2x fa-facebook'
+                className='text-primary fa fa-2x fa-facebook'
                 aria-hidden='true'
               ></i>{' '}
             </a>
             <a href=''>
               {' '}
               <i
-                class=' text-danger fa fa-2x fa-google'
+                className='text-danger fa fa-2x fa-google'
                 aria-hidden='true'
               ></i>{' '}
             </a>
             <a href=''>
               {' '}
               <i
-                class=' text-primary fa fa-2x fa-twitter'
+                className='text-primary fa fa-2x fa-twitter'
                 aria-hidden='true'
               ></i>
             </a>

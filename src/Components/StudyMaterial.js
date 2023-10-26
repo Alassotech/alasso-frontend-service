@@ -1,63 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import Sem_num from '../Popups/Sem_num';
-import Modal from 'react-modal';
-import axios from '../axios';
-import { toast } from 'react-hot-toast';
-import { InfinitySpin } from 'react-loader-spinner';
-import { useStore } from 'zustand';
-import { useContentStoe } from '../store';
-import { responsive } from '../utils/responsive';
-import { customStyles } from '../utils/customStyles';
-
+import React, { useEffect, useState } from 'react'
+import Carousel from 'react-multi-carousel'
+import 'react-multi-carousel/lib/styles.css'
+import Sem_num from '../Popups/Sem_num'
+import Modal from 'react-modal'
+import { InfinitySpin } from 'react-loader-spinner'
+import { responsive } from '../utils/responsive'
+import { customStyles } from '../utils/customStyles'
+import { useSelector } from 'react-redux'
 const StudyMaterial = () => {
-  const [semListClass, setSemListClass] = useState('');
-  const [semPop, setSemPop] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [loadedImages, setLoadedImages] = useState([]);
-  const { courses } = useStore(useContentStoe);
-
-  useEffect(() => {
-    useContentStoe.getState().fetchCourses();
-    toast.success('All Courses Updated');
-  }, []);
+  const [semListClass, setSemListClass] = useState('')
+  const [semPop, setSemPop] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [loadedImages, setLoadedImages] = useState([])
+  const { courses } = useSelector(state => state.course)
+  useEffect(() => {}, [])
 
   useEffect(() => {
     const loadImages = async () => {
       const promises = courses.map(async (course, index) => {
-        const { semester, courseName } = course;
-        const img = new Image();
-        img.src = `/course_images/img${index}.jpg`;
+        const { semester, courseName } = course
+        const img = new Image()
+        img.src = `/course_images/img${index}.jpg`
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           img.onload = () => {
-            setLoadedImages((prevLoadedImages) => [...prevLoadedImages, index]);
-            resolve();
-          };
-        });
-      });
+            setLoadedImages(prevLoadedImages => [...prevLoadedImages, index])
+            resolve()
+          }
+        })
+      })
 
-      await Promise.all(promises);
-    };
+      await Promise.all(promises)
+    }
 
-    loadImages();
-  }, [courses]);
+    loadImages()
+  }, [courses])
 
-  const [selectedSemester, setSelectedSemester] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState('');
+  const [selectedSemester, setSelectedSemester] = useState([])
+  const [selectedCourse, setSelectedCourse] = useState('')
 
   const handleClick = (sem, course) => {
-    setSelectedSemester(sem);
-    setSelectedCourse(course);
-    setSemPop(true);
-    setShowModal(!showModal);
-    setDisplay();
-  };
+    setSelectedSemester(sem)
+    setSelectedCourse(course)
+    setSemPop(true)
+    setShowModal(!showModal)
+    setDisplay()
+  }
 
   const setDisplay = () => {
-    setSemListClass(semListClass === '' ? 'hidden' : '');
-  };
+    setSemListClass(semListClass === '' ? 'hidden' : '')
+  }
 
   return (
     <div className='sub-cont'>
@@ -71,21 +63,21 @@ const StudyMaterial = () => {
         <Carousel className='c-c' responsive={responsive}>
           {courses.length > 0 ? (
             courses.map((course, index) => {
-              const { semester, courseName } = course;
-              const isImageLoaded = loadedImages.includes(index);
+              const { semester, courseName } = course
+              const isImageLoaded = loadedImages.includes(index)
 
               return (
                 <div className='c-item' key={course._id}>
                   <div
                     className={`name-code`}
                     onClick={() => {
-                      handleClick(semester, courseName);
+                      handleClick(semester, courseName)
                     }}
                   >
                     <div
                       className={`blur-load ${isImageLoaded ? 'loaded' : ''}`}
                       style={{
-                        backgroundImage: `url('/course_images/img${index}.jpg')`,
+                        backgroundImage: `url('/course_images/img${index}.jpg')`
                       }}
                     >
                       <img
@@ -96,21 +88,21 @@ const StudyMaterial = () => {
                     </div>
                     <button
                       onClick={() => {
-                        handleClick(semester, courseName);
+                        handleClick(semester, courseName)
                       }}
                     >
                       {courseName}
                     </button>
                   </div>
                 </div>
-              );
+              )
             })
           ) : (
             <div
               style={{
                 alignItems: 'center',
                 textAlign: 'center',
-                width: '100vw',
+                width: '100vw'
               }}
             >
               <InfinitySpin width='200' color='blue' />
@@ -133,7 +125,7 @@ const StudyMaterial = () => {
         </Modal>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default StudyMaterial;
+export default StudyMaterial

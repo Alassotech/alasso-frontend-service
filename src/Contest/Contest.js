@@ -1,14 +1,10 @@
 import React from 'react'
-import { useState } from 'react'
 import { useEffect } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import HelpFilters from './Filters/HelpFilters'
 import HelpCards from './Filters/HelpCards'
-import { v4 as uuidV4 } from 'uuid'
 import '../Components/css/Help.css'
 import { InfinitySpin } from 'react-loader-spinner'
-import { useAuthStore } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import { contestData } from '../store/slices/contestSlice'
 const Contest = () => {
@@ -16,6 +12,7 @@ const Contest = () => {
 
   const dispatch = useDispatch()
   const { filtered, loading } = useSelector(state => state.contest)
+  const { token } = useSelector(state => state.auth)
 
   useEffect(() => {
     const section = document.querySelector('.filter-btns')
@@ -30,7 +27,6 @@ const Contest = () => {
       })
     })
     observer.observe(section)
-    const token = useAuthStore.getState().token
     if (!token) {
       navigate('/login-alert-404')
     }

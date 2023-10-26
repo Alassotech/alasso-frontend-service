@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import './css/dress.css'
 import axios from '../axios'
-import { useGetFromStore } from '../hooks/zustandHooks'
 import toast from 'react-hot-toast'
-import { useAuthStore } from '../store'
 import { useNavigate } from 'react-router-dom'
 
 const Dress = () => {
   const navigate = useNavigate()
-  const token = useGetFromStore(useAuthStore, state => state.token)
 
   const [cupi, setcupi] = useState('')
 
@@ -79,27 +76,27 @@ const Dress = () => {
   const handleSubmit = async e => {
     e.preventDefault()
 
-    if (token) {
-      if (formData.upiId === cupi) {
-        const res = await axios.post('/buy/dress', formData)
-        toast.success(res?.data.message)
+    // if (token) {
+    //   if (formData.upiId === cupi) {
+    //     const res = await axios.post('/buy/dress', formData)
+    //     toast.success(res?.data.message)
 
-        setFormData({
-          name: '',
-          uid: '',
-          number: '',
-          selectedItems: [],
-          pantsColor: '',
-          upiId: '',
-          size: 'XS',
-          cost: 0
-        })
-      } else {
-        toast.error(`UPI ID DOESN'T MATCH`)
-      }
-    } else {
-      toast.error('Please Login to Book')
-    }
+    //     setFormData({
+    //       name: '',
+    //       uid: '',
+    //       number: '',
+    //       selectedItems: [],
+    //       pantsColor: '',
+    //       upiId: '',
+    //       size: 'XS',
+    //       cost: 0
+    //     })
+    //   } else {
+    //     toast.error(`UPI ID DOESN'T MATCH`)
+    //   }
+    // } else {
+    //   toast.error('Please Login to Book')
+    // }
   }
 
   return (

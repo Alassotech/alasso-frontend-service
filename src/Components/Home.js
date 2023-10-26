@@ -7,23 +7,14 @@ import { toast } from 'react-hot-toast'
 import { useEffect } from 'react'
 import DevbyLokie from '../Promotions/DevbyLokie'
 import { Link } from 'react-router-dom'
-import { useAuthStore } from '../store'
-import { useGetFromStore } from '../hooks/zustandHooks'
-
-import axios from '../axios'
+import { validate } from '../store/slices/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function Home () {
   const [isPending, startTransition] = useTransition()
   const [slideIndex, setSlideIndex] = useState(1)
   const [popuup, setpopup] = useState(false)
-  const user = useGetFromStore(useAuthStore, state => state.user)
-  const email = useGetFromStore(useAuthStore, state => state.email)
-
-  const setEmail = useAuthStore(state => state.setEmail)
-  const setName = useAuthStore(state => state.setName)
-  const setRole = useAuthStore(state => state.setRole)
-  const setIsLoggedIn = useAuthStore(state => state.setIsLoggedIn)
-
+  const dispatch = useDispatch()
   const nextSlide = () => {
     if (slideIndex !== dataSlider.length) {
       setSlideIndex(slideIndex + 1)
@@ -31,20 +22,17 @@ export default function Home () {
       setSlideIndex(1)
     }
   }
+
+  const { user, role } = useSelector(state => state.auth)
+
   const [transparent, setTransparent] = useState(false)
   const [dis, setdis] = useState(true)
   const [colors, setColor] = useState('white')
 
   useEffect(() => {
     startTransition(() => {
-      const validateUse = async () => {
-        const res = await axios.post('/validate')
-        setRole(res?.data?.role)
-        setName(res?.data?.username)
-        setEmail(res?.data?.email)
-        setIsLoggedIn(res?.data?.username ? true : false)
-      }
-      validateUse()
+      dispatch(validate('/validate'))
+
       toast(`Alasso Welcomes You ${user ? user : ''}`, {
         icon: '🙏',
         style: {
@@ -86,28 +74,6 @@ export default function Home () {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  // useEffect(() => {
-  //   const seen = localStorage.getItem('promo')
-  //   if (!seen) {
-  //     const section = document.querySelector('.overlay-m')
-  //     var pop = document.querySelector('.popup')
-  //     const observer = new IntersectionObserver(entries => {
-  //       entries.forEach(entry => {
-  //         if (entry.isIntersecting) {
-  //           pop.classList.add('pop-ani')
-  //         }
-  //       })
-  //     })
-  //     observer.observe(section)
-  //   } else {
-  //     const section = document.querySelector('.overlay-m')
-  //     if (section) {
-  //       section.classList.add('seen')
-  //     }
-  //     setpopup(false)
-  //   }
-  // }, [])
 
   const prevSlide = () => {
     if (slideIndex !== 1) {
@@ -258,13 +224,15 @@ export default function Home () {
               }
             >
               <p className='wlcmtxt'>
-                <div className="blur-load-home" style={{
-                          backgroundImage: `url('/images/blur.jpg')`
-                        }}>
-                <img className='home-s' src={`/images/img${index + 1}.png`}  />
-
+                <div
+                  className='blur-load-home'
+                  style={{
+                    backgroundImage: `url('/images/blur.jpg')`
+                  }}
+                >
+                  <img className='home-s' src={`/images/img${index + 1}.png`} />
                 </div>
-                
+
                 <p className='highlights1'>Makes Your</p>
                 <p className='highlights2'>College Journey</p>
                 <p className={`highlights3`}>Easier</p>
