@@ -1,25 +1,13 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import './css/Navbar.css'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from '../axios'
-import { useAuthStore } from '../store'
-import { useGetFromStore } from '../hooks/zustandHooks'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchCourses, fetchNptel } from '../store/slices/coursesSlices'
 const Navbar = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [isPending, startTransition] = useTransition()
-  const user = useGetFromStore(useAuthStore, state => state.user)
-  const [setStoreToken, setIsLoggedIn, setRole, setName, setEmail] =
-    useAuthStore(state => [
-      state.setToken,
-      state.setRole,
-      state.setEmail,
-      state.setName,
-      state.setIsLoggedIn
-    ])
-
+  
   const { courses, nptel } = useSelector(state => state.course)
 
   useEffect(() => {
@@ -29,16 +17,7 @@ const Navbar = () => {
     })
   }, [])
 
-  const handleLogout = () => {
-    startTransition(() => {
-      setStoreToken('')
-      setRole('')
-      setName('')
-      setEmail('')
-      setIsLoggedIn(false)
-      navigate('/signup')
-    })
-  }
+
 
   const courseMaps = courses.map((course, index) => {
     const sem = course.semester
@@ -199,7 +178,7 @@ const Navbar = () => {
             <li className='nav-item mx-3'>
               {user ? (
                 <button
-                  onClick={handleLogout}
+                  // onClick={}
                   className='nav-btn bg-danger'
                   style={{
                     boxShadow:
