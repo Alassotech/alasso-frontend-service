@@ -32,7 +32,7 @@ const DevbyLokie = () => {
           dedication to excellence and expertise.
         </div>
         <div style={{width:'100%', display:'flex', justifyContent:'center', columnGap:'1em'}}>
-        <a
+        {/* <a
           onClick={openpdf}
           style={{
             backgroundColor: 'white',
@@ -44,7 +44,7 @@ const DevbyLokie = () => {
         >
           {' '}
           Check Project Prices
-        </a>
+        </a> */}
         <a
           href='https://devbylokie.netlify.app/'
           target={'_blank'}

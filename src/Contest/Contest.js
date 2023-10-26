@@ -11,7 +11,7 @@ import { InfinitySpin } from 'react-loader-spinner'
 import { useAuthStore } from '../store'
 
 const Contest = () => {
-  const [codeContest, setCodeContests] = useState([])
+  // const [codeContest, setCodeContests] = useState([])
   const [filtered, setFiltered] = useState([])
   const [platform, setPlatform] = useState('')
   const navigate = useNavigate()
