@@ -4,9 +4,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from '../axios'
 import { useAuthStore } from '../store'
 import { useGetFromStore } from '../hooks/zustandHooks'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchCourses, fetchNptel } from '../store/slices/coursesSlices'
 const Navbar = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [isPending, startTransition] = useTransition()
   const user = useGetFromStore(useAuthStore, state => state.user)
   const [setStoreToken, setIsLoggedIn, setRole, setName, setEmail] =
@@ -18,23 +20,14 @@ const Navbar = () => {
       state.setIsLoggedIn
     ])
 
+  const { courses, nptel } = useSelector(state => state.course)
+
   useEffect(() => {
     startTransition(() => {
-      const fetchCourses = async () => {
-        const data = await (await axios.get('/getcourse')).data
-        setcourses(data)
-      }
-      const fetchNptel = async () => {
-        const data = await (await axios.get('/nptel-courses')).data
-        setnptel(data)
-      }
-      fetchCourses()
-      fetchNptel()
+      dispatch(fetchCourses('/getcourse'))
+      dispatch(fetchNptel('/nptel-courses'))
     })
   }, [])
-
-  const [courses, setcourses] = useState([])
-  const [nptel, setnptel] = useState([])
 
   const handleLogout = () => {
     startTransition(() => {

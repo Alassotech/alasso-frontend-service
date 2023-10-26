@@ -1,59 +1,34 @@
-import React, { useEffect } from 'react'
-import axios from 'axios'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setFilter } from '../../store/slices/contestSlice';
 
-const HelpFilter = ({ codeContest, setFiltered, platform, setPlatform }) => {
-  useEffect(() => {
-    const filtered = codeContest.filter(contest => {
-      return contest.site === platform
-    })
+const filterOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'HackerRank', label: 'Hacker Rank' },
+  { value: 'HackerEarth', label: 'Hacker Earth' },
+  { value: 'CodeChef', label: 'Code Chef' },
+  { value: 'CodeForces', label: 'Code Forces' },
+  { value: 'LeetCode', label: 'Leet Code' },
+  { value: 'Kick Start', label: 'Kick Start' },
+  { value: 'AtCoder', label: 'AtCoder' },
+];
 
-    setFiltered(filtered)
-  }, [platform])
+const HelpFilter = () => {
+  const dispatch = useDispatch();
 
   return (
     <>
-      <button
-        onClick={() => setPlatform('HackerRank')}
-        className={`contest-btns`}
-      >
-        All
-      </button>
-      <button
-        onClick={() => setPlatform('HackerRank')}
-        className={`contest-btns`}
-      >
-        Hacker Rank
-      </button>
-
-      <button
-        onClick={() => setPlatform('HackerEarth')}
-        className='contest-btns'
-      >
-        Hacker Earth
-      </button>
-      <button onClick={() => setPlatform('CodeChef')} className='contest-btns'>
-        Code Chef
-      </button>
-      <button
-        onClick={() => setPlatform('CodeForces')}
-        className='contest-btns'
-      >
-        Code Forces
-      </button>
-      <button onClick={() => setPlatform('LeetCode')} className='contest-btns'>
-        Leet Code
-      </button>
-      <button
-        onClick={() => setPlatform('Kick Start')}
-        className='contest-btns'
-      >
-        Kick Start
-      </button>
-      <button onClick={() => setPlatform('AtCoder')} className='contest-btns'>
-        AtCoder
-      </button>
+      {filterOptions.map(option => (
+        <button
+          key={option.value}
+          onClick={() => dispatch(setFilter(option.value))}
+          className="contest-btns"
+        >
+          {option.label}
+        </button>
+      ))}
     </>
-  )
-}
+  );
+};
 
-export default HelpFilter
+export default HelpFilter;

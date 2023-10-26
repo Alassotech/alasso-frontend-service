@@ -23,14 +23,10 @@ export const useAuthStore = create(
   )
 )
 
-
-export const useContentStoe = create(
-  set => ({
-    courses:[],
-    fetchCourses: async () => {
-      const data = await (await axios.get('/getcourse')).data;
-      set((state) => ({ courses: data }));
-    },
-  })
-)
-
+export const useContentStoe = create(set => ({
+  courses: [],
+  fetchCourses: async () => {
+    const data = await (await axios.get('/getcourse')).data
+    set(state => ({ courses: data }))
+  }
+}))
